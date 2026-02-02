@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💕 Egy kérdésem van… 💕</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 15px;
+    color: #fff;
+    text-shadow: 2px 2px 5px #ff4d6d;
+}
+
+#counter {
+    color: white;
+    font-size: 18px;
+}
+
+.heart {
+    position: absolute;
+    font-size: 32px;
+    cursor: pointer;
+    animation: fall linear;
+}
+
+@keyframes fall {
+    from { top: -50px; }
+    to { top: 110vh; }
+}
+
+#question, #popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.25);
+    z-index: 10;
+}
+
+button {
+    font-size: 18px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+#yes {
+    background: #ff4d6d;
+    color: white;
+}
+
+#no {
+    background: #ccc;
+    position: relative;
+}
+
+#popup img {
+    width: 200px;
+    max-width: 80vw;
+}
+
+/* 💥 HOSSZABB SZÍVROBBANÁS */
+.burst {
+    position: fixed;
+    font-size: 28px;
+    animation: burst 2.5s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes burst {
+    0% {
+        transform: scale(0.8) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.2) translateY(-220px);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>💖 Kapd el az 5 szívet! 💖</h1>
+<div id="counter">Elkapott szívek: 0 / 5</div>
+
+<div id="question">
+    <h2>Hanga 💕<br>Leszel a Valentinom?</h2>
+    <button id="yes">IGEN 😍</button>
+    <button id="no">Nem 🙈</button>
+</div>
+
+<div id="popup">
+    <h2>YEEEES 💖💖💖</h2>
+    <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" alt="Hello Kitty">
+    <p>Szeretlek 🥰 Boldog Valentin-napot!</p>
+</div>
+
+<audio id="music">
+    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Lauv/I_Like_Me_Better/Lauv_-_I_Like_Me_Better.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let count = 0;
+let heartInterval; // ⬅️ ezt le fogjuk állítani
+
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = (3 + Math.random() * 2) + "s";
+
+    function catchHeart() {
+        heart.remove();
+        count++;
+        document.getElementById("counter").innerText =
+            `Elkapott szívek: ${count} / 5`;
+        if (count >= 5) {
+            document.getElementById("question").style.display = "block";
+        }
+    }
+
+    heart.addEventListener("click", catchHeart);
+    heart.addEventListener("touchstart", catchHeart);
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 5000);
+}
+
+// ⬇️ ELINDÍTJUK és eltesszük az ID-t
+heartInterval = setInterval(createHeart, 700);
+
+document.getElementById("yes").onclick = () => {
+    // 🛑 SZÍVEK MEGÁLLÍTÁSA
+    clearInterval(heartInterval);
+
+    // meglévő leeső szívek törlése
+    document.querySelectorAll(".heart").forEach(h => h.remove());
+
+    document.getElementById("question").style.display = "none";
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("music").play();
+
+    heartBurst();
+};
+
+function heartBurst() {
+    for (let i = 0; i < 45; i++) {
+        const h = document.createElement("div");
+        h.className = "burst";
+        h.innerHTML = "💖";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.top = (50 + Math.random() * 20) + "vh";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 2500);
+    }
+}
+
+function moveNo(btn) {
+    btn.style.position = "absolute";
+    btn.style.left = Math.random() * 70 + "%";
+    btn.style.top = Math.random() * 70 + "%";
+}
+
+const noBtn = document.getElementById("no");
+noBtn.addEventListener("mouseover", () => moveNo(noBtn));
+noBtn.addEventListener("touchstart", () => moveNo(noBtn));
+</script>
+
+</body>
+</html>
